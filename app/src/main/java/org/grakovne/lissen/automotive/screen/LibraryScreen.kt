@@ -2,6 +2,7 @@ package org.grakovne.lissen.automotive.screen
 
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
@@ -13,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.automotive.LissenCarEntryPoint
+import org.grakovne.lissen.automotive.screen.PlayerScreen
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Book
@@ -166,8 +168,7 @@ class LibraryScreen(
                             isLoading = false
                             invalidate()
                         }
-                    }
-                    is ApiResult.Error -> {
+                    }                    is ApiResult.Error -> {
                         isLoading = false
                         invalidate()
                     }
@@ -177,7 +178,9 @@ class LibraryScreen(
                 invalidate()
             }
         }
-    }    private fun selectLibrary(library: Library) {
+    }
+
+    private fun selectLibrary(library: Library) {
         currentLibrary = library
         loadBooks(library.id)
     }
@@ -186,8 +189,7 @@ class LibraryScreen(
         lifecycleScope.launch {
             try {
                 when (val result = mediaProvider.fetchBooks(libraryId, 20, 0)) {
-                    is ApiResult.Success -> {
-                        books = result.data.items
+                    is ApiResult.Success -> {                        books = result.data.items
                         isLoading = false
                         invalidate()
                     }
@@ -195,10 +197,10 @@ class LibraryScreen(
                         isLoading = false
                         invalidate()
                     }
-                }            } catch (e: Exception) {
+                }
+            } catch (e: Exception) {
                 isLoading = false
-                invalidate()
-            }
+                invalidate()            }
         }
     }
 
@@ -209,7 +211,8 @@ class LibraryScreen(
                     is ApiResult.Success -> {
                         val detailedBook = result.data
                         // Navigate to player screen
-                        screenManager.push(PlayerScreen(carContext, detailedBook))
+                        carContext.getCarService(ScreenManager::class.java)
+                            .push(PlayerScreen(carContext, detailedBook))
                     }
                     is ApiResult.Error -> {
                         // Handle error - could show a toast or error message
