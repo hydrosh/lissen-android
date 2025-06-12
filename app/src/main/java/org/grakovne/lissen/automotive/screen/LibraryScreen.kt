@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.automotive.LissenCarEntryPoint
-import org.grakovne.lissen.channel.common.fold
+import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.Library
@@ -146,13 +146,12 @@ class LibraryScreen(
             .setHeaderAction(Action.BACK)
             .setTitle(currentLibrary?.name ?: "Books")
             .build()
-    }
-
-    private fun loadLibraries() {
+    }    private fun loadLibraries() {
         lifecycleScope.launch {
             try {
-                mediaProvider.fetchLibraries().fold(
-                    onSuccess = { libs ->
+                when (val result = mediaProvider.fetchLibraries()) {
+                    is ApiResult.Success -> {
+                        val libs = result.data
                         libraries = libs
                         
                         // If there's a preferred library, use it directly
@@ -166,12 +165,12 @@ class LibraryScreen(
                             isLoading = false
                             invalidate()
                         }
-                    },
-                    onFailure = {
+                    }
+                    is ApiResult.Error -> {
                         isLoading = false
                         invalidate()
                     }
-                )
+                }
             } catch (e: Exception) {
                 isLoading = false
                 invalidate()
@@ -182,39 +181,38 @@ class LibraryScreen(
     private fun selectLibrary(library: Library) {
         currentLibrary = library
         loadBooks(library.id)
-    }
-
-    private fun loadBooks(libraryId: String) {
+    }    private fun loadBooks(libraryId: String) {
         lifecycleScope.launch {
             try {
-                mediaProvider.fetchBooks(libraryId, 20, 0).fold(
-                    onSuccess = { pagedItems ->
-                        books = pagedItems.items
-                        isLoading = false
-                        invalidate()
-                    },
-                    onFailure = {
+                when (val result = mediaProvider.fetchBooks(libraryId, 20, 0)) {
+                    is ApiResult.Success -> {
+                        books = result.data.items
                         isLoading = false
                         invalidate()
                     }
-                )
+                    is ApiResult.Error -> {
+                        isLoading = false
+                        invalidate()
+                    }
+                }
             } catch (e: Exception) {
                 isLoading = false
                 invalidate()
             }
         }
-    }
-
-    private fun playBook(book: Book) {
+    }    private fun playBook(book: Book) {
         lifecycleScope.launch {
             try {
-                val detailedBook = mediaProvider.fetchBook(book.id).fold(
-                    onSuccess = { it },
-                    onFailure = { return@launch }
-                )
-
-                // Navigate to player screen
-                screenManager.push(PlayerScreen(carContext, detailedBook))
+                when (val result = mediaProvider.fetchBook(book.id)) {
+                    is ApiResult.Success -> {
+                        val detailedBook = result.data
+                        // Navigate to player screen
+                        screenManager.push(PlayerScreen(carContext, detailedBook))
+                    }
+                    is ApiResult.Error -> {
+                        // Handle error - could show a toast or error message
+                    }
+                }
             } catch (e: Exception) {
                 // Handle error
             }
