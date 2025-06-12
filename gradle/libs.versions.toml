@@ -28,6 +28,8 @@ media3Session = "1.7.1"
 media3DatasourceOkhttp = "1.7.1"
 lifecycleService = "2.9.1"
 lifecycleProcess = "2.9.1"
+# Android Auto support
+androidxCar = "1.0.0-alpha7"
 
 [libraries]
 acra-core = { module = "ch.acra:acra-core", version.ref = "acraCore" }
@@ -72,6 +74,9 @@ androidx-media3-session = { group = "androidx.media3", name = "media3-session", 
 androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3DatasourceOkhttp" }
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
+# Android Auto dependencies
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "androidxCar" }
+androidx-car-app-automotive = { group = "androidx.car.app", name = "app-automotive", version.ref = "androidxCar" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

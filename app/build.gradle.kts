@@ -169,6 +169,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // Android Auto dependencies
+    implementation(libs.androidx.car.app)
+    implementation(libs.androidx.car.app.automotive)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

@@ -9,6 +9,15 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+    <!-- Android Auto permissions -->
+    <uses-feature
+        android:name="android.hardware.type.automotive"
+        android:required="false" />
+    
+    <uses-feature
+        android:name="android.software.car.templates_host"
+        android:required="false" />
+
     <application
         android:name=".LissenApplication"
         android:allowBackup="true"
@@ -24,6 +33,11 @@
         android:theme="@style/Theme.Lissen"
         tools:ignore="DiscouragedApi,UnusedAttribute"
         tools:targetApi="35">
+
+        <!-- Android Auto metadata -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
 
         <activity
             android:screenOrientation="portrait"
@@ -62,6 +76,17 @@
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
+        <!-- Android Auto Service -->
+        <service
+            android:name=".automotive.LissenCarAppService"
+            android:exported="true"
+            android:label="@string/car_app_service_label">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.AUDIO" />
             </intent-filter>
         </service>
 
