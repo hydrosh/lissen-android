@@ -29,7 +29,7 @@ val localProperties = Properties().apply {
 }
 
 android {
-    namespace = "org.grakovne.lissen"
+    namespace = "org.grakovne.lissen"    
     compileSdk = 35
 
     lint {
@@ -39,7 +39,7 @@ android {
     defaultConfig {
         applicationId = "org.grakovne.lissen"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 10501
         versionName = "1.5.1"
 
@@ -92,16 +92,16 @@ android {
             applicationIdSuffix = ".debug"
             versionNameSuffix = " (DEBUG)"
             matchingFallbacks.add("release")
-            isDebuggable = true
-        }
+            isDebuggable = true        }
     }
-
+    
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+    
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
     buildFeatures {
         buildConfig = true

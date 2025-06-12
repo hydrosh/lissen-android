@@ -107,11 +107,10 @@ class LibraryScreen(
 
     private fun createLibrarySelectionTemplate(): Template {
         val listBuilder = ItemList.Builder()
-
         libraries.forEach { library ->
             listBuilder.addItem(
                 Row.Builder()
-                    .setTitle(library.name)
+                    .setTitle(library.title)
                     .setOnClickListener { 
                         selectLibrary(library)
                     }
@@ -133,7 +132,7 @@ class LibraryScreen(
             listBuilder.addItem(
                 Row.Builder()
                     .setTitle(book.title)
-                    .addText(book.author ?: "Unknown Author")
+                    .addText(book.author ?: "Unknown Author")                    
                     .setOnClickListener {
                         playBook(book)
                     }
@@ -144,9 +143,11 @@ class LibraryScreen(
         return ListTemplate.Builder()
             .setSingleList(listBuilder.build())
             .setHeaderAction(Action.BACK)
-            .setTitle(currentLibrary?.name ?: "Books")
+            .setTitle(currentLibrary?.title ?: "Books")
             .build()
-    }    private fun loadLibraries() {
+    }
+
+    private fun loadLibraries() {
         lifecycleScope.launch {
             try {
                 when (val result = mediaProvider.fetchLibraries()) {
@@ -176,12 +177,12 @@ class LibraryScreen(
                 invalidate()
             }
         }
-    }
-
-    private fun selectLibrary(library: Library) {
+    }    private fun selectLibrary(library: Library) {
         currentLibrary = library
         loadBooks(library.id)
-    }    private fun loadBooks(libraryId: String) {
+    }
+
+    private fun loadBooks(libraryId: String) {
         lifecycleScope.launch {
             try {
                 when (val result = mediaProvider.fetchBooks(libraryId, 20, 0)) {
@@ -194,13 +195,14 @@ class LibraryScreen(
                         isLoading = false
                         invalidate()
                     }
-                }
-            } catch (e: Exception) {
+                }            } catch (e: Exception) {
                 isLoading = false
                 invalidate()
             }
         }
-    }    private fun playBook(book: Book) {
+    }
+
+    private fun playBook(book: Book) {
         lifecycleScope.launch {
             try {
                 when (val result = mediaProvider.fetchBook(book.id)) {
