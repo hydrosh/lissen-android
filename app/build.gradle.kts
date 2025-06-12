@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         applicationId = "org.grakovne.lissen"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 35
         versionCode = 10501
         versionName = "1.5.1"

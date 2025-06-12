@@ -29,7 +29,7 @@ media3DatasourceOkhttp = "1.7.1"
 lifecycleService = "2.9.1"
 lifecycleProcess = "2.9.1"
 # Android Auto support
-androidxCar = "1.0.0-alpha7"
+androidxCar = "1.7.0-rc01"
 
 [libraries]
 acra-core = { module = "ch.acra:acra-core", version.ref = "acraCore" }

@@ -5,27 +5,31 @@ import androidx.car.app.Screen
 import androidx.car.app.Session
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.automotive.screen.LibraryScreen
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.playback.MediaRepository
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class LissenCarAppSession : Session(), DefaultLifecycleObserver {
 
-    @Inject
-    lateinit var preferences: LissenSharedPreferences
-
-    @Inject
-    lateinit var mediaProvider: LissenMediaProvider
-
-    @Inject
-    lateinit var mediaRepository: MediaRepository
+    private lateinit var preferences: LissenSharedPreferences
+    private lateinit var mediaProvider: LissenMediaProvider
+    private lateinit var mediaRepository: MediaRepository
 
     override fun onCreateScreen(intent: Intent): Screen {
         lifecycle.addObserver(this)
+        
+        // Initialize dependencies manually since we can't use @AndroidEntryPoint
+        val entryPoint = EntryPointAccessors.fromApplication(
+            carContext,
+            LissenCarEntryPoint::class.java
+        )
+        
+        preferences = entryPoint.preferences()
+        mediaProvider = entryPoint.mediaProvider()
+        mediaRepository = entryPoint.mediaRepository()
         
         return when {
             !preferences.hasCredentials() -> {

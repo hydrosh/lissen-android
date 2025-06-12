@@ -10,26 +10,22 @@ import androidx.car.app.model.Template
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.automotive.LissenCarEntryPoint
 import org.grakovne.lissen.channel.common.fold
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class LibraryScreen(
     carContext: CarContext,
     private val errorMessage: String? = null
 ) : Screen(carContext), DefaultLifecycleObserver {
 
-    @Inject
-    lateinit var preferences: LissenSharedPreferences
-
-    @Inject
-    lateinit var mediaProvider: LissenMediaProvider
+    private lateinit var preferences: LissenSharedPreferences
+    private lateinit var mediaProvider: LissenMediaProvider
 
     private var libraries = listOf<Library>()
     private var books = listOf<Book>()
@@ -38,6 +34,17 @@ class LibraryScreen(
 
     init {
         lifecycle.addObserver(this)
+        
+        if (errorMessage == null) {
+            // Initialize dependencies
+            val entryPoint = EntryPointAccessors.fromApplication(
+                carContext,
+                LissenCarEntryPoint::class.java
+            )
+            
+            preferences = entryPoint.preferences()
+            mediaProvider = entryPoint.mediaProvider()
+        }
     }
 
     override fun onGetTemplate(): Template {

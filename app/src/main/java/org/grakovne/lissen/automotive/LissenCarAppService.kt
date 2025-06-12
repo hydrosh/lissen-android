@@ -3,9 +3,7 @@ package org.grakovne.lissen.automotive
 import androidx.car.app.CarAppService
 import androidx.car.app.Session
 import androidx.car.app.validation.HostValidator
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class LissenCarAppService : CarAppService() {
 
     override fun createHostValidator(): HostValidator {

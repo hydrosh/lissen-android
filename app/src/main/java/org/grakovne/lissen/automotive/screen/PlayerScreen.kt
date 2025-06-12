@@ -12,21 +12,19 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
+import org.grakovne.lissen.automotive.LissenCarEntryPoint
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.playback.MediaRepository
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class PlayerScreen(
     carContext: CarContext,
     private val book: DetailedItem
 ) : Screen(carContext), DefaultLifecycleObserver {
 
-    @Inject
-    lateinit var mediaRepository: MediaRepository
+    private lateinit var mediaRepository: MediaRepository
 
     private var isPlaying = false
     private var currentPosition = 0.0
@@ -44,6 +42,14 @@ class PlayerScreen(
 
     init {
         lifecycle.addObserver(this)
+        
+        // Initialize dependencies
+        val entryPoint = EntryPointAccessors.fromApplication(
+            carContext,
+            LissenCarEntryPoint::class.java
+        )
+        
+        mediaRepository = entryPoint.mediaRepository()
     }
 
     override fun onCreate(owner: LifecycleOwner) {
