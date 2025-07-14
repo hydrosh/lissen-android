@@ -202,6 +202,18 @@ fun AppNavHost(
           },
         )
       }
+
+      composable(
+        route = "auto_book_selection_screen",
+        enterTransition = { enterTransition },
+        exitTransition = { exitTransition },
+        popEnterTransition = { popEnterTransition },
+        popExitTransition = { popExitTransition },
+      ) {
+        org.grakovne.lissen.ui.screens.auto.AutoBookSelectionScreen(
+          navController = navigationService
+        )
+      }
     }
   }
 }
